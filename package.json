@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/blue3xp/react-native-floatball#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/@blue3xp"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
