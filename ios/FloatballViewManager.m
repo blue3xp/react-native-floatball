@@ -1,34 +1,63 @@
 #import <React/RCTViewManager.h>
-
+#import "MISFloatingBall.h"
+#import "RNIOSExportJsToReact.h"
 @interface FloatballViewManager : RCTViewManager
 @end
 
 @implementation FloatballViewManager
+{
+    MISFloatingBall *ball;
+}
 
 RCT_EXPORT_MODULE(FloatballView)
 
 - (UIView *)view
 {
-  return [[UIView alloc] init];
+    MISFloatingBall *floating = [[MISFloatingBall alloc] initWithFrame:CGRectMake(100, 100, 60, 60)];
+    // 自动靠边
+    floating.autoCloseEdge = YES;
+    ball = floating;
+    return floating;
 }
 
-RCT_CUSTOM_VIEW_PROPERTY(color, NSString, UIView)
+RCT_CUSTOM_VIEW_PROPERTY(url, NSString, MISFloatingBall)
 {
-  [view setBackgroundColor:[self hexStringToColor:json]];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSURL   *imgURL  = [NSURL URLWithString:json];
+        NSData  *imgData = [NSData dataWithContentsOfURL:imgURL];
+        UIImage *img     = [UIImage imageWithData:imgData];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [view setContent:img contentType:MISFloatingBallContentTypeImage];
+                });
+            });
 }
 
-- hexStringToColor:(NSString *)stringToConvert
+RCT_CUSTOM_VIEW_PROPERTY(isShow, BOOL, MISFloatingBall)
 {
-  NSString *noHashString = [stringToConvert stringByReplacingOccurrencesOfString:@"#" withString:@""];
-  NSScanner *stringScanner = [NSScanner scannerWithString:noHashString];
-
-  unsigned hex;
-  if (![stringScanner scanHexInt:&hex]) return nil;
-  int r = (hex >> 16) & 0xFF;
-  int g = (hex >> 8) & 0xFF;
-  int b = (hex) & 0xFF;
-
-  return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:1.0f];
+    BOOL flag = [RCTConvert BOOL:json];
+    NSLog(@"flag:%d",flag);
+    if(flag){
+        [view show];
+        view.clickHandler = ^(MISFloatingBall * _Nonnull floatingBall) {
+            RNIOSExportJsToReact(@{});
+        };
+    }
+    else{
+        [view hide];
+    }
 }
+
+RCT_EXPORT_METHOD(show: (BOOL) flag)
+{
+    if (flag) {
+        [ball show];
+    }
+    else{
+        [ball hide];
+    }
+}
+
+
 
 @end

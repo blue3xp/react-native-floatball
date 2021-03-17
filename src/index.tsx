@@ -1,7 +1,8 @@
 import { requireNativeComponent, ViewStyle } from 'react-native';
 
 type FloatballProps = {
-  color: string;
+  url: string;
+  isShow:boolean;
   style: ViewStyle;
 };
 
