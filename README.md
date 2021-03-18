@@ -15,8 +15,13 @@ import Floatball from "react-native-floatball";
 
 // ...
 
-const result = await Floatball.multiply(3, 7);
-```
+<View style={styles.container}>
+      <FloatballViewManager url={url} style={styles.box} isShow={isShow}/>
+      <Button onPress={() => {
+          setShow(!isShow);
+          console.log(isShow)
+        }} title={'click'}/>
+        </View>```
 
 ## Contributing
 
