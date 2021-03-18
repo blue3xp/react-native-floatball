@@ -5,9 +5,6 @@
 @end
 
 @implementation FloatballViewManager
-{
-    MISFloatingBall *ball;
-}
 
 RCT_EXPORT_MODULE(FloatballView)
 
@@ -16,7 +13,6 @@ RCT_EXPORT_MODULE(FloatballView)
     MISFloatingBall *floating = [[MISFloatingBall alloc] initWithFrame:CGRectMake(100, 100, 60, 60)];
     // 自动靠边
     floating.autoCloseEdge = YES;
-    ball = floating;
     return floating;
 }
 
@@ -48,15 +44,6 @@ RCT_CUSTOM_VIEW_PROPERTY(isShow, BOOL, MISFloatingBall)
     }
 }
 
-RCT_EXPORT_METHOD(show: (BOOL) flag)
-{
-    if (flag) {
-        [ball show];
-    }
-    else{
-        [ball hide];
-    }
-}
 
 
 
