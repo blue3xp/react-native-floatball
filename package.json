@@ -1,6 +1,6 @@
 {
   "name": "react-native-floatball",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "react-native-floatball",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/blue3xp/react-native-floatball#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/@blue3xp"
+    "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",

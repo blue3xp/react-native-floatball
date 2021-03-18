@@ -7,6 +7,8 @@
 //  悬浮球
 
 #import <UIKit/UIKit.h>
+#import <React/RCTComponent.h>
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -40,6 +42,9 @@ UIKIT_STATIC_INLINE MISEdgeRetractConfig MISEdgeOffsetConfigMake(CGPoint edgeRet
 typedef void(^MISFloatingBallClickHandler)(MISFloatingBall *floatingBall);
 
 @interface MISFloatingBall : UIView
+
+@property (nonatomic, copy) RCTBubblingEventBlock onPress;
+
 /**
  靠边策略
  */

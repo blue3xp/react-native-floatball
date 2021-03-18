@@ -13,6 +13,13 @@ RCT_EXPORT_MODULE(FloatballView)
     MISFloatingBall *floating = [[MISFloatingBall alloc] initWithFrame:CGRectMake(100, 100, 60, 60)];
     // 自动靠边
     floating.autoCloseEdge = YES;
+    floating.clickHandler = ^(MISFloatingBall * _Nonnull floatingBall) {
+//            RNIOSExportJsToReact(@{});
+        if (floatingBall.onPress) {
+            floatingBall.onPress(@{});
+        }
+        
+    };
     return floating;
 }
 
@@ -29,15 +36,16 @@ RCT_CUSTOM_VIEW_PROPERTY(url, NSString, MISFloatingBall)
             });
 }
 
+RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock);
+
+
 RCT_CUSTOM_VIEW_PROPERTY(isShow, BOOL, MISFloatingBall)
 {
     BOOL flag = [RCTConvert BOOL:json];
     NSLog(@"flag:%d",flag);
     if(flag){
         [view show];
-        view.clickHandler = ^(MISFloatingBall * _Nonnull floatingBall) {
-            RNIOSExportJsToReact(@{});
-        };
+
     }
     else{
         [view hide];

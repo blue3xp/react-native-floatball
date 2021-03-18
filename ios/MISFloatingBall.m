@@ -353,6 +353,9 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
     if ([_delegate respondsToSelector:@selector(didClickFloatingBall:)]) {
         [_delegate didClickFloatingBall:self];
     }
+//    if (self.onPress) {
+//            self.onPress(@{});
+//    }
 }
 
 #pragma mark - Setter / Getter

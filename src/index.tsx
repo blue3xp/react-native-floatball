@@ -4,6 +4,7 @@ type FloatballProps = {
   url: string;
   isShow:boolean;
   style: ViewStyle;
+  onPress:Function;
 };
 
 export const FloatballViewManager = requireNativeComponent<FloatballProps>(
