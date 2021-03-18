@@ -13,7 +13,6 @@ npm install react-native-floatball
 ```js
 import Floatball from "react-native-floatball";
 
-// ...
 
 <View style={styles.container}>
       <FloatballViewManager url={url} style={styles.box} isShow={isShow}/>
@@ -21,7 +20,8 @@ import Floatball from "react-native-floatball";
           setShow(!isShow);
           console.log(isShow)
         }} title={'click'}/>
-        </View>```
+        </View>
+ ```
 
 ## Contributing
 
