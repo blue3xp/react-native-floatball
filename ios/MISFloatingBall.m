@@ -24,12 +24,12 @@
             *stop = YES;
         }
     }];
-    
+
     if (CGRectContainsPoint(floatingBall.bounds,
             [floatingBall convertPoint:point fromView:self])) {
         return [super pointInside:point withEvent:event];
     }
-    
+
     return NO;
 }
 @end
@@ -49,7 +49,7 @@
     dispatch_once(&onceToken, ^{
         ballMgr = [[MISFloatingBallManager alloc] init];
     });
-    
+
     return ballMgr;
 }
 
@@ -79,7 +79,7 @@
 
 - (void)mis_addSubview:(UIView *)subview {
     [self mis_addSubview:subview];
-    
+
     if ([MISFloatingBallManager shareManager].canRuntime) {
         if ([[MISFloatingBallManager shareManager].superView isEqual:self]) {
             [self.subviews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -142,15 +142,15 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        
+
         _autoCloseEdge = NO;
         _autoEdgeRetract = NO;
         _edgePolicy = MISFloatingBallEdgePolicyAllEdge;
         _effectiveEdgeInsets = effectiveEdgeInsets;
-        
+
         UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
-        
+
         [self addGestureRecognizer:tapGesture];
         [self addGestureRecognizer:panGesture];
         [self configSpecifiedView:specifiedView];
@@ -169,13 +169,13 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
         window.rootViewController.view.backgroundColor = [UIColor clearColor];
         window.rootViewController.view.userInteractionEnabled = NO;
         [window makeKeyAndVisible];
-        
+
         _parentView = window;
     }
-    
+
     _parentView.hidden = YES;
     _centerOffset = CGPointMake(_parentView.bounds.size.width * 0.6, _parentView.bounds.size.height * 0.6);
-    
+
     // setup ball manager
     [MISFloatingBallManager shareManager].canRuntime = YES;
     [MISFloatingBallManager shareManager].superView = specifiedView;
@@ -198,7 +198,7 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
 
 - (void)autoEdgeOffset {
     MISEdgeRetractConfig config = self.edgeRetractConfigHander ? self.edgeRetractConfigHander() : MISEdgeOffsetConfigMake(CGPointMake(self.bounds.size.width * 0.3, self.bounds.size.height * 0.3), 0.8);
-    
+
     [UIView animateWithDuration:0.5f animations:^{
         self.center = [self calculatePoisitionWithEndOffset:config.edgeRetractOffset];
         self.alpha = config.edgeRetractAlpha;
@@ -211,7 +211,7 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
     CGFloat parentViewW = self.parentView.bounds.size.width;
     CGFloat parentViewH = self.parentView.bounds.size.height;
     CGPoint center = self.center;
-    
+
     if (MISFloatingBallEdgePolicyLeftRight == self.edgePolicy) {
         // 左右
         center.x = (center.x < self.parentView.bounds.size.width * 0.5) ? (ballHalfW - offset.x + self.effectiveEdgeInsets.left) : (parentViewW + offset.x - ballHalfW + self.effectiveEdgeInsets.right);
@@ -221,10 +221,12 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
     }
     else if (MISFloatingBallEdgePolicyAllEdge == self.edgePolicy) {
         if (center.y < minUpDownLimits) {
-            center.y = ballHalfH - offset.y + self.effectiveEdgeInsets.top;
+            // center.y = ballHalfH - offset.y + self.effectiveEdgeInsets.top;
+            center.y = minUpDownLimits; // y：上部最高的位置
         }
         else if (center.y > parentViewH - minUpDownLimits) {
-            center.y = parentViewH + offset.y - ballHalfH + self.effectiveEdgeInsets.bottom;
+            // center.y = parentViewH + offset.y - ballHalfH + self.effectiveEdgeInsets.bottom;
+            center.y = parentViewH - minUpDownLimits; // y：下部最低的位置
         }
         else {
             center.x = (center.x < self.parentView.bounds.size.width  * 0.5) ? (ballHalfW - offset.x + self.effectiveEdgeInsets.left) : (parentViewW + offset.x - ballHalfW + self.effectiveEdgeInsets.right);
@@ -265,7 +267,7 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
 - (void)setContent:(id)content contentType:(MISFloatingBallContentType)contentType {
     BOOL notUnknowType = (MISFloatingBallContentTypeCustomView == contentType) || (MISFloatingBallContentTypeImage == contentType) || (MISFloatingBallContentTypeText == contentType);
     NSAssert(notUnknowType, @"can't set ball content with an unknow content type");
-    
+
     [self.ballCustomView removeFromSuperview];
     if (MISFloatingBallContentTypeImage == contentType) {
         NSAssert([content isKindOfClass:[UIImage class]], @"can't set ball content with a not image content for image type");
@@ -286,14 +288,14 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
         [self.ballLabel setHidden:YES];
         [self.ballCustomView setHidden:NO];
         [self.ballImageView setHidden:YES];
-        
+
         self.ballCustomView = (UIView *)content;
-        
+
         CGRect frame = self.ballCustomView.frame;
         frame.origin.x = (self.bounds.size.width - self.ballCustomView.bounds.size.width) * 0.5;
         frame.origin.y = (self.bounds.size.height - self.ballCustomView.bounds.size.height) * 0.5;
         self.ballCustomView.frame = frame;
-        
+
         self.ballCustomView.userInteractionEnabled = NO;
         [self addSubview:self.ballCustomView];
     }
@@ -305,30 +307,30 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panGesture {
     if (UIGestureRecognizerStateBegan == panGesture.state) {
         [self setAlpha:1.0f];
-        
+
         // cancel
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(autoEdgeOffset) object:nil];
     }
     else if (UIGestureRecognizerStateChanged == panGesture.state) {
         CGPoint translation = [panGesture translationInView:self];
-        
+
         CGPoint center = self.center;
         center.x += translation.x;
         center.y += translation.y;
         self.center = center;
-        
+
         CGFloat   leftMinX = 0.0f + self.effectiveEdgeInsets.left;
         CGFloat    topMinY = 0.0f + self.effectiveEdgeInsets.top;
         CGFloat  rightMaxX = self.parentView.bounds.size.width - self.bounds.size.width + self.effectiveEdgeInsets.right;
         CGFloat bottomMaxY = self.parentView.bounds.size.height - self.bounds.size.height + self.effectiveEdgeInsets.bottom;
-        
+
         CGRect frame = self.frame;
         frame.origin.x = frame.origin.x > rightMaxX ? rightMaxX : frame.origin.x;
         frame.origin.x = frame.origin.x < leftMinX ? leftMinX : frame.origin.x;
         frame.origin.y = frame.origin.y > bottomMaxY ? bottomMaxY : frame.origin.y;
         frame.origin.y = frame.origin.y < topMinY ? topMinY : frame.origin.y;
         self.frame = frame;
-        
+
         // zero
         [panGesture setTranslation:CGPointZero inView:self];
     }
@@ -347,7 +349,7 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
     if (self.clickHandler) {
         self.clickHandler(weakSelf);
     }
-    
+
     if ([_delegate respondsToSelector:@selector(didClickFloatingBall:)]) {
         [_delegate didClickFloatingBall:self];
     }
@@ -357,7 +359,7 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
 
 - (void)setAutoCloseEdge:(BOOL)autoCloseEdge {
     _autoCloseEdge = autoCloseEdge;
-    
+
     if (autoCloseEdge) {
         [self autoCloseEdge];
     }
@@ -365,7 +367,7 @@ static const NSInteger minUpDownLimits = 60 * 1.5f;   // MISFloatingBallEdgePoli
 
 - (void)setTextTypeTextColor:(UIColor *)textTypeTextColor {
     _textTypeTextColor = textTypeTextColor;
-    
+
     [self.ballLabel setTextColor:textTypeTextColor];
 }
 
